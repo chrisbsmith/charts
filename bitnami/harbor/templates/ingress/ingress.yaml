@@ -41,6 +41,9 @@ metadata:
   {{- if .Values.commonAnnotations }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
+  {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
 spec:
   {{- if .Values.service.tls.enabled }}
   tls:
@@ -111,6 +114,9 @@ metadata:
   {{- if .Values.commonAnnotations }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
+  {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
 spec:
   {{- if .Values.service.tls.enabled }}
   tls:
@@ -119,7 +125,7 @@ spec:
     {{- else if .Values.service.tls.existingSecret }}
     - secretName: {{ .Values.service.tls.existingSecret }}
     {{- else }}
-    - secretName: {{ include "harbor.ingress" . }}
+    - secretName: {{ include "harbor.ingress-notary" . }}
     {{- end }}
       {{- if .Values.ingress.hosts.notary }}
       hosts:
